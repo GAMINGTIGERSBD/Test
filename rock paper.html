@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" type="x-icon" href="rock-paper-scissors.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    <style>
+        body {  
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            width: 300px;
+        }
+        .title {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        button {
+            font-size: 18px;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background: #007bff;
+            color: #fff;
+            transition: background 0.3s, transform 0.3s;
+        }
+        button:hover {
+            background: #0056b3;
+            transform: scale(1.05);
+        }
+        button:active {
+            background: #003d7a;
+        }
+        .result {
+            font-size: 20px;
+            margin-top: 20px;
+            color: #333;
+        }
+        .hands img {
+            width: 60px;
+            height: 60px;
+            margin: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hands img.shaking {
+            animation: shake 1s infinite;
+        }
+        .hands img:hover {
+            transform: scale(0.9);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 10px rgba(255, 0, 255, 0.8), 0 0 10px rgba(255, 255, 0, 0.8);
+        }
+        .hands img:active {
+            transform: scale(0.85);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.8), 0 0 20px rgba(255, 0, 255, 0.8), 0 0 20px rgba(255, 255, 0, 0.8);
+        }
+        @keyframes shake {
+            0% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            100% { transform: translateX(-10px); }
+        }
+        .countdown {
+            font-size: 24px;
+            color: #007bff;
+            margin-top: 10px;
+        }
+        .glow {
+            text-shadow: 0 0 20px rgba(0, 123, 255, 0.8);
+        }
+        .hidden {
+            display: none;
+        }
+        .top-hands, .bottom-hands {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title glow">Rock Paper Scissors</h1>
+        <div class="top-hands">
+            <img id="opponentRock" src="rock.jpg" alt="Rock" class="shaking hidden">
+            <img id="opponentPaper" src="paper.jpg" alt="Paper" class="shaking hidden">
+            <img id="opponentScissors" src="scissors.jpg" alt="Scissors" class="shaking hidden">
+        </div>
+        <div class="bottom-hands hands">
+            <img id="userRock" src="rock.jpg" alt="Rock">
+            <img id="userPaper" src="paper.jpg" alt="Paper">
+            <img id="userScissors" src="scissors.jpg" alt="Scissors">
+        </div>
+        <button id="gameButton" onclick="startGame()">Start Game</button>
+        <div class="countdown" id="countdown"></div>
+        <div class="result" id="result"></div>
+    </div>
+    <script>
+        let countdownInterval;
+        let timeLeft = 3;
+
+        function startGame() {
+            timeLeft = 3;
+            document.getElementById('gameButton').innerText = 'Restart Game';
+            document.getElementById('opponentRock').classList.remove('hidden');
+            document.getElementById('opponentPaper').classList.remove('hidden');
+            document.getElementById('opponentScissors').classList.remove('hidden');
+            document.getElementById('userRock').classList.add('shaking');
+            document.getElementById('userPaper').classList.add('shaking');
+            document.getElementById('userScissors').classList.add('shaking');
+
+            document.getElementById('result').innerText = '';
+            document.getElementById('countdown').innerText = `Choose your option! Time left: ${timeLeft}s`;
+
+            countdownInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('countdown').innerText = `Choose your option! Time left: ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    document.getElementById('userRock').classList.remove('shaking');
+                    document.getElementById('userPaper').classList.remove('shaking');
+                    document.getElementById('userScissors').classList.remove('shaking');
+                    document.getElementById('result').innerText = 'Time is up! Please click "Restart Game" and choose again.';
+                }
+            }, 1000);
+        }
+
+        function play(userChoice) {
+            clearInterval(countdownInterval);
+            document.getElementById('opponentRock').classList.remove('shaking');
+            document.getElementById('opponentPaper').classList.remove('shaking');
+            document.getElementById('opponentScissors').classList.remove('shaking');
+            document.getElementById('userRock').classList.remove('shaking');
+            document.getElementById('userPaper').classList.remove('shaking');
+            document.getElementById('userScissors').classList.remove('shaking');
+
+            const choices = ['rock', 'paper', 'scissors'];
+            const computerChoice = choices[Math.floor(Math.random() * 3)];
+            let result;
+
+            if (userChoice === computerChoice) {
+                result = `It's a tie! Both chose ${userChoice}.`;
+            } else if (
+                (userChoice === 'rock' && computerChoice === 'scissors') ||
+                (userChoice === 'paper' && computerChoice === 'rock') ||
+                (userChoice === 'scissors' && computerChoice === 'paper')
+            ) {
+                result = `You win! ${userChoice} beats ${computerChoice}.`;
+            } else {
+                result = `You lose! ${computerChoice} beats ${userChoice}.`;
+            }
+
+            document.getElementById('result').innerText = result;
+        }
+
+        // Add event listeners to the images
+        document.getElementById('userRock').addEventListener('click', () => play('rock'));
+        document.getElementById('userPaper').addEventListener('click', () => play('paper'));
+        document.getElementById('userScissors').addEventListener('click', () => play('scissors'));
+    </script>
+</body>
+</html>

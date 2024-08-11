@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" type="x-icon" href="tic-tac-toe.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+    <style>
+        body {
+        background-image: url(background.jpg);
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: 100% 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #222;
+            color: #fff;
+            font-family: "DotGothic16", sans-serif;
+        }
+        .container {
+            text-align: center;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .cell:hover {
+            background-color: #444;
+            box-shadow: 0 0 10px #fff;
+        }
+        .glow {
+            animation: glow 1s infinite alternate;
+        }
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 10px #fff;
+            }
+            to {
+                box-shadow: 0 0 20px #0ff;
+            }
+        }
+        .button {
+            padding: 10px 20px;
+            background-color: red;
+            border: none;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin: 5px;
+            font-family: "DotGothic16", sans-serif;
+        }
+        .button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px black;
+        }
+        .blue-button {
+            background-color: blue;
+        }
+        .blue-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px black;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="currentPlayer">Current Player: X</div>
+        <div class="board" id="board">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+        <button class="button" id="restart">Restart</button>
+<a href="index.html">
+        <button class="button blue-button" id="goBack">Go Back</button>
+</a>
+        <div id="message"></div>
+    </div>
+    <script>
+        const board = document.getElementById('board');
+        const cells = document.querySelectorAll('.cell');
+        const restartButton = document.getElementById('restart');
+        const goBackButton = document.getElementById('goBack');
+        const message = document.getElementById('message');
+        const currentPlayerDisplay = document.getElementById('currentPlayer');
+        let currentPlayer = 'X';
+        let gameActive = true;
+        const winningConditions = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+
+        function handleCellClick(event) {
+            const cell = event.target;
+            const index = cell.getAttribute('data-index');
+
+            if (cell.textContent !== '' || !gameActive) {
+                return;
+            }
+
+            cell.textContent = currentPlayer;
+            cell.classList.add('glow');
+            checkWinner();
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            currentPlayerDisplay.textContent = `Current Player: ${currentPlayer}`;
+        }
+
+        function checkWinner() {
+            let roundWon = false;
+            for (let i = 0; i < winningConditions.length; i++) {
+                const [a, b, c] = winningConditions[i];
+                if (cells[a].textContent && cells[a].textContent === cells[b].textContent && cells[a].textContent === cells[c].textContent) {
+                    roundWon = true;
+                    break;
+                }
+            }
+
+            if (roundWon) {
+                message.textContent = `Player ${currentPlayer} wins!`;
+                gameActive = false;
+                return;
+            }
+
+            if ([...cells].every(cell => cell.textContent !== '')) {
+                message.textContent = 'Draw!';
+                gameActive = false;
+                return;
+            }
+        }
+
+        function restartGame() {
+            currentPlayer = 'X';
+            gameActive = true;
+            message.textContent = '';
+            currentPlayerDisplay.textContent = `Current Player: ${currentPlayer}`;
+            cells.forEach(cell => {
+                cell.textContent = '';
+                cell.classList.remove('glow');
+            });
+        }
+
+        function goBack() {
+            window.location.href = 'dashboard.html';
+        }
+
+        cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+        restartButton.addEventListener('click', restartGame);
+        goBackButton.addEventListener('click', goBack);
+    </script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2573475279316125"
+crossorigin="anonymous"></script>
+<!-- ad unit -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-2573475279316125"
+data-ad-slot="7534088353"
+data-ad-format="auto"
+data-full-width-responsive="true"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</body>
+</html>
